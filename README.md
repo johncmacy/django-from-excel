@@ -48,10 +48,8 @@ Assumes you already have a Django project ("project") and app ("app") created, a
 ## TODO's
 
 1. Columns with boolean data *and* blanks are given the float64 dtype
-2. Design to be run after a Django project and app have been created
-3. Extend manage.py with `convertexceltracker` command (https://docs.djangoproject.com/en/3.2/howto/custom-management-commands/)[https://docs.djangoproject.com/en/3.2/howto/custom-management-commands/]
-4. Package for pypi.org
-5. Create documentation branch in Github, publish using Github Pages and Material for MkDocs
+2. Package for pypi.org
+3. Create documentation branch in Github, publish using Github Pages and Material for MkDocs
 
 
 
