@@ -1,55 +1,94 @@
 # django-from-excel
-Utility to convert an Excel tracker-style file to a Django project
-
-## Purpose
-
-This utility will be able to:
-
-* Read an Excel file of the user's choosing.
-
-* Create a Django model from the table, with fields for each column.
-* Detect the datatype of each column, and map to Django field types.
-* Detect columns that should be foreign keys.
-* Create corresponding models for the foreign keys to point to.
-* Add models to `core.admin`.
-* Run `manage.py makemigrations` and `manage.py migrate`.
-* Optionally, write the rows as new records in the database.
-
-
-## Problem
-
-Excel is often used as a status tracker. It is chosen because it is readily available and widely understood. However, Excel is not ideal:
-
-* Sharing creates multiple versions, each of which can easily get out-of-sync.
-* Data is not normalized, which can lead to integrity errors.
-* It is difficult (or impossible) to build pre-defined views of the same data, which leads to:
-  * duplication of data into multiple views, or
-  * poorly-designed views that make it difficult to make the right decisions with the data.
-
-On the other hand, fully-customized web apps are expensive and time-consuming to develop.
-
-## Solution
-
-This utility aims to help solve the problem by quickly converting an Excel tracker into a basically functioning Django app that can be interacted with using the Django admin interface.
+Automatically builds Django models from an Excel file
 
 ## Getting Started
 
-Assumes you already have a Django project ("project") and app ("app") created, and can use the `manage.py` command.
+The following instructions assume you already have a Django project and at least one app set up.
 
-1. TODO: installation instructions
-2. Place tracker file to convert *from* in the same directory as `manage.py`
-3. Run `py manage.py convertfrom tracker.xlsx app --overwrite`
-4. Inspect `models.py` and `admin.py` in the `app` directory
+### Installation
 
+``` sh
+pip install django-from-excel
+```
 
+### Setup
+
+Copy the Excel file you want to convert to a location in the project that is easy to reference. The simplest approach is to place it in the same directory as `manage.py`, as that is where you'll need to run the command from.
+
+Before continuing, make sure you have created an app, and that it is registered in `settings.INSTALLED_APPS`.
+
+Add `django_from_excel` to `settings.INSTALLED_APPS`.
+
+At this point, also confirm your database settings.
+
+### Run
+
+``` sh
+manage.py buildfrom <filename> <app>
+```
+
+!!! example
+  If you placed a file called "tracker.xlsx" in the same directory as your manage.py file, and you have an app named "app", run:
+
+  ``` sh
+  manage.py buildfrom tracker.xlsx app
+  ```
+
+The following options are available for the `buildfrom` command:
+
+**filename:**
+
+Required. The filename or path/to/filename for the Excel file to generate models from.
+
+**app:**
+
+Required. The app to generate `models.py` and `admin.py` files in. Must already exist, and must be listed in `settings.INSTALLED_APPS`.
+
+**--overwrite:**
+
+Will overwrite existing `admin.py` and `models.py` files in the target app; otherwise, a unique hex string will be appended to the filenames, such as `models_120f77f8.py`.
+
+!!! warning
+  If you have existing models and specify `--overwrite`, they will be lost forever!
+
+**--migrate:**
+
+After generating the models, this will automatically run `manage.py makemigrations` and `manage.py migrate`.
+
+**--loaddata:**
+
+Once migrations are complete, this will generate a `convertedmodel.json` file in `<app>/fixtures`, and will then call the `manage.py loaddata convertedmodel.json <app>` command.
+Must be used in conjunction with `--migrate`.
+
+### Inspect
+
+View the `models.py` and `admin.py` files that were generated.
+
+If you chose the `--migrate` option:
+
+Log in to the [Django admin](http://localhost:8000/admin/). Your converted model(s) should be listed there.
+
+If you specified `--loaddata`:
+
+Open the model, and you should have a record for each row in the original Excel file.
+
+### Build Your Dream App
+
+This is only intended to create a starting point. You'll want to inspect the models to make sure the field types are correct, and you'll likely need to add some nullable fields or unique constraints, and you may need to spin some fields off into their own tables, with foreign keys linking back. But, hopefully `django-from-excel` saved you time by quickly creating some Django models for you.
+
+### Eject
+
+Once you are satisfied with the results, you can remove `django_from_excel` from `settings.INSTALLED_APPS` and uninstall `django-from-excel` and any other dependencies you don't need for your project.
 
 ---
 
 ## TODO's
 
 1. Columns with boolean data *and* blanks are given the float64 dtype
-2. Package for pypi.org
-3. Create documentation branch in Github, publish using Github Pages and Material for MkDocs
+2. Detect duplicate data that should be in a foreign table, create ForeignKey field
+3. Create an eject command
+
+
 
 
 
