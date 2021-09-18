@@ -8,7 +8,14 @@ pip install django-from-excel
 
 # Setup
 
-Copy the Excel file you want to convert to a location in the project that is easy to reference. The simplest approach is to place it in the same directory as `manage.py`, as that is where you'll need to run the command from.
+Locate the Excel file that has the data you want to build models from. It should have a table of data, like this:
+
+![Example Excel file](static/img/fleet.xlsx.png)
+
+<figcaption style="margin-bottom: 2rem; font-style: italic;">fleet.xlsx</figcaption>
+
+
+Copy this file to a location in the project that is easy to reference. The simplest approach is to place it in the same directory as `manage.py`, as that is where you'll need to run the command from.
 
 Before continuing, make sure you have created an app, and that it is registered in `settings.INSTALLED_APPS`.
 
@@ -49,6 +56,28 @@ After generating the models, this will automatically run `manage.py makemigratio
 Once migrations are complete, this will generate a `convertedmodel.json` file in `<app>/fixtures`, and will then call the `manage.py loaddata convertedmodel.json <app>` command.
 Must be used in conjunction with `--migrate`.
 
+``` json
+[
+    {
+        "model": "app.convertedmodel",
+        "pk": 1,
+        "fields": {
+            "vin": "JN8AF5MV9BT005581",
+            "year": 2021,
+            "make": "Chevrolet",
+            "model": "Silverado 1500",
+            "mileage": 25000,
+            "color": "White",
+            "engine_size_liters": 6.2,
+            "fuel_type": "gasoline",
+            "avg_mpg": 24.5394832,
+            "is_leased": true
+        }
+    },
+    ...
+]
+```
+
 # Inspect
 
 View the `models.py` and `admin.py` files that were generated.
@@ -57,9 +86,13 @@ If you chose the `--migrate` option:
 
 Log in to the [Django admin](http://localhost:8000/admin/). Your converted model(s) should be listed there.
 
+![Converted models in Django admin](static/img/django-admin.png)
+
 If you specified `--loaddata`:
 
 Open the model, and you should have a record for each row in the original Excel file.
+
+![Example record in converted model](static/img/converted-model.png)
 
 # Build Your Dream App
 
