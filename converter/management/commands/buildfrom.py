@@ -164,7 +164,6 @@ admin.site.register({model_name})
 
                 management.call_command('loaddata', f'{model_name.lower()}.json', app=app)
 
-
         self.stdout.write(self.style.SUCCESS(f'Complete. View the data at http://localhost:8000/admin/'))
 
 
