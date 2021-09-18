@@ -23,15 +23,10 @@ At this point, also confirm your database settings.
 
 ### Run
 
+Example:
+
 ``` sh
-manage.py buildfrom <filename> <app>
-```
-
-!!! example
-  If you placed a file called "tracker.xlsx" in the same directory as your manage.py file, and you have an app named "app", run:
-
-  ``` sh
-  manage.py buildfrom tracker.xlsx app
+manage.py buildfrom tracker.xlsx app --overwrite --migrate --loaddata
   ```
 
 The following options are available for the `buildfrom` command:
@@ -48,8 +43,7 @@ Required. The app to generate `models.py` and `admin.py` files in. Must already 
 
 Will overwrite existing `admin.py` and `models.py` files in the target app; otherwise, a unique hex string will be appended to the filenames, such as `models_120f77f8.py`.
 
-!!! warning
-  If you have existing models and specify `--overwrite`, they will be lost forever!
+WARNING: If you have existing models and specify `--overwrite`, they will be lost forever!
 
 **--migrate:**
 
@@ -74,7 +68,7 @@ Open the model, and you should have a record for each row in the original Excel 
 
 ### Build Your Dream App
 
-This is only intended to create a starting point. You'll want to inspect the models to make sure the field types are correct, and you'll likely need to add some nullable fields or unique constraints, and you may need to spin some fields off into their own tables, with foreign keys linking back. But, hopefully `django-from-excel` saved you time by quickly creating some Django models for you.
+This is only intended to create a starting point. You'll want to inspect the models to make sure the field types are correct, you'll likely need to add some nullable fields or unique constraints, and you may need to spin some fields off into their own tables, with foreign keys linking back. But, hopefully `django-from-excel` saved you time by quickly creating some Django models for you.
 
 ### Eject
 
@@ -84,8 +78,8 @@ Once you are satisfied with the results, you can remove `django_from_excel` from
 
 ## TODO's
 
-1. Columns with boolean data *and* blanks are given the float64 dtype
-2. Detect duplicate data that should be in a foreign table, create ForeignKey field
+1. Detect nullable data by columns with blank cells, while maintaining ability to detect column's data type
+2. Detect duplicate data that should be in a foreign table, and create corresponding ForeignKey field
 3. Create an eject command
 
 
