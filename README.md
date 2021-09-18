@@ -1,4 +1,4 @@
-# excel-tracker-to-django
+# django-from-excel
 Utility to convert an Excel tracker-style file to a Django project
 
 ## Purpose

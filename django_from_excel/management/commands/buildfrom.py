@@ -99,7 +99,7 @@ class Command(BaseCommand):
         ]
 
         models_py = (f'''
-# Created by excel-tracker-to-django at {datetime.now()}
+# Created by django-from-excel at {datetime.now()}
 
 from django.db import models
 
@@ -115,7 +115,7 @@ class {model_name}(models.Model):
         ''')
 
         admin_py = f'''
-# Created by excel-tracker-to-django at {datetime.now()}
+# Created by django-from-excel at {datetime.now()}
 
 from django.contrib import admin
 from .models import *
