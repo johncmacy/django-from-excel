@@ -1,3 +1,22 @@
+
+Have an Excel tool that you'd like to quickly convert to a Django project? `django-from-excel` is the answer.
+
+## Features
+
+1. Generates models.py file:
+   1. Generate a Django model for each table/sheet in your Excel file
+   2. Create appropriate field types for each of your table columns, with Pythonic naming
+   3. TODO: Detect nullable columns
+   4. TODO: Identify columns that should be foreign keys, and create corresponding models with choice fields
+2. Generates admin.py file:
+   1. Registers all models created in Step 1
+3. Optionally creates migration files and migrates the schema
+4. Optionally generates fixtures and loads data into your database
+
+With a single command, you will be able to explore your data in the Django admin.
+
+---
+
 The following instructions assume you already have a Django project and at least one app set up.
 
 # Installation
@@ -12,9 +31,6 @@ Locate the Excel file that has the data you want to build models from. It should
 
 ![Example Excel file](static/img/fleet.xlsx.png)
 
-<figcaption style="margin-bottom: 2rem; font-style: italic;">fleet.xlsx</figcaption>
-
-
 Copy this file to a location in the project that is easy to reference. The simplest approach is to place it in the same directory as `manage.py`, as that is where you'll need to run the command from.
 
 Before continuing, make sure you have created an app, and that it is registered in `settings.INSTALLED_APPS`.
@@ -28,14 +44,14 @@ At this point, also confirm your database settings.
 Example:
 
 ``` sh
-manage.py buildfrom tracker.xlsx app --overwrite --migrate --loaddata
+manage.py buildfrom fleet.xlsx app --overwrite --migrate --loaddata
   ```
 
 The following options are available for the `buildfrom` command:
 
-**filename:**
+**filepath:**
 
-Required. The filename or path/to/filename for the Excel file to generate models from.
+Required. The filepath or path/to/filepath for the Excel file to generate models from.
 
 **app:**
 
@@ -43,7 +59,7 @@ Required. The app to generate `models.py` and `admin.py` files in. Must already 
 
 **--overwrite:**
 
-Will overwrite existing `admin.py` and `models.py` files in the target app; otherwise, a unique hex string will be appended to the filenames, such as `models_120f77f8.py`.
+Will overwrite existing `admin.py` and `models.py` files in the target app; otherwise, a unique hex string will be appended to the file names, such as `models_120f77f8.py`.
 
 WARNING: If you have existing models and specify `--overwrite`, they will be lost forever!
 
@@ -73,8 +89,7 @@ Must be used in conjunction with `--migrate`.
             "avg_mpg": 24.5394832,
             "is_leased": true
         }
-    },
-    ...
+    }
 ]
 ```
 
@@ -102,15 +117,4 @@ This is only intended to create a starting point. You'll want to inspect the mod
 
 Once you are satisfied with the results, you can remove `django_from_excel` from `settings.INSTALLED_APPS` and uninstall `django-from-excel` and any other dependencies you don't need for your project.
 
----
-
-# TODO's
-
-1. Detect nullable data by columns with blank cells, while maintaining ability to detect column's data type
-2. Detect duplicate data that should be in a foreign table, and create corresponding ForeignKey field
-3. Create an eject command
-
-
-
-
-
+TODO: Create an eject command to handle this automatically.
