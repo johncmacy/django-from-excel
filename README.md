@@ -17,15 +17,17 @@ With a single command, you will be able to explore your data in the Django admin
 
 ---
 
+# Usage
+
 The following instructions assume you already have a Django project and at least one app set up.
 
-# Installation
+## Installation
 
 ``` sh
 pip install django-from-excel
 ```
 
-# Setup
+## Setup
 
 Locate the Excel file that has the data you want to build models from. It should have a table of data, like this:
 
@@ -39,7 +41,7 @@ Add `django_from_excel` to `settings.INSTALLED_APPS`.
 
 At this point, also confirm your database settings.
 
-# Run
+## Run
 
 Example:
 
@@ -93,7 +95,7 @@ Must be used in conjunction with `--migrate`.
 ]
 ```
 
-# Inspect
+## Inspect
 
 View the `models.py` and `admin.py` files that were generated.
 
@@ -109,12 +111,20 @@ Open the model, and you should have a record for each row in the original Excel 
 
 ![Example record in converted model](static/img/converted-model.png)
 
-# Build Your Dream App
-
-This is only intended to create a starting point. You'll want to inspect the models to make sure the field types are correct, you'll likely need to add some nullable fields or unique constraints, and you may need to spin some fields off into their own tables, with foreign keys linking back. But, hopefully `django-from-excel` saved you time by quickly creating some Django models for you.
-
-# Eject
+## Eject
 
 Once you are satisfied with the results, you can remove `django_from_excel` from `settings.INSTALLED_APPS` and uninstall `django-from-excel` and any other dependencies you don't need for your project.
 
 TODO: Create an eject command to handle this automatically.
+
+## Build Your Dream App
+
+This is only intended to create a starting point. You'll want to inspect the models to make sure the field types are correct, you'll likely need to add some nullable fields or unique constraints, and you may need to spin some fields off into their own tables, with foreign keys linking back.
+
+---
+
+# Common Errors
+
+## Unknown command: 'buildfrom'
+
+Solution: Add `django_from_excel` to `settings.INSTALLED_APPS`.
