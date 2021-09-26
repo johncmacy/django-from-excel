@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from pandas.core import series
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
@@ -70,6 +71,8 @@ class Field:
         elif self.dtype == 'datetime64[ns]':
             field_type = 'models.DateTimeField({})'
 
+            self.series = self.series.dt.strftime('%Y-%m-%d %H:%M:%S')
+
         if self.is_nullable:
             kwargs['null'] = True
             kwargs['blank'] = True
@@ -112,14 +115,14 @@ class Model:
         df_as_dict = self.dataframe.to_dict(orient='records')
         for record in df_as_dict:
             for key, value in record.items():
-                if str(value).lower() == 'nan':
+                if str(value).lower() in ['nan', 'nat']:
                     record[key] = None
 
         return [
             {
                 'model': f'{self.app}.{self.class_name.lower()}',
                 'pk': i,
-                'fields': {k: None if str(v).lower() == 'nan' else v for k, v in fields.items()},
+                'fields': {k: None if str(v).lower() in ['nan', 'nat'] else v for k, v in fields.items()},
             }
             for i, fields
             in enumerate(df_as_dict, start=1)
