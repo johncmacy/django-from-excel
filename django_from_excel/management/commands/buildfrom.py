@@ -43,7 +43,6 @@ class Field:
                 field_type = 'models.CharField({})'
                 kwargs['max_length'] = max([len(str(cell_value)) for cell_value in self.series_without_nulls] or [1])
 
-
         elif self.dtype == 'bool':
             field_type = 'models.BooleanField({})'
 
@@ -67,6 +66,9 @@ class Field:
 
             kwargs['max_digits'] = max_digits
             kwargs['decimal_places'] = decimal_places
+
+        elif self.dtype == 'datetime64[ns]':
+            field_type = 'models.DateTimeField({})'
 
         if self.is_nullable:
             kwargs['null'] = True
@@ -221,6 +223,3 @@ class Command(BaseCommand):
         self.stdout.write(f'Converting {filepath} to models in {app}')
 
         Converter(filepath, app, overwrite, migrate, loaddata).convert()
-
-
-
