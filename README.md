@@ -1,5 +1,5 @@
 
-Have an Excel tool that you'd like to quickly convert to a Django project? `django-from-excel` is the answer.
+Quickly convert an Excel file to a Django project with models and an admin interface.
 
 ## Features
 
