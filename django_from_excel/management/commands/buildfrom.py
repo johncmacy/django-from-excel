@@ -71,8 +71,6 @@ class Field:
         elif self.dtype == 'datetime64[ns]':
             field_type = 'models.DateTimeField({})'
 
-            self.series = self.series.dt.strftime('%Y-%m-%d %H:%M:%S')
-
         if self.is_nullable:
             kwargs['null'] = True
             kwargs['blank'] = True
@@ -117,6 +115,12 @@ class Model:
             for key, value in record.items():
                 if str(value).lower() in ['nan', 'nat']:
                     record[key] = None
+
+        # Loop over each field - and for each DateTime field - convert in DataFrame to string.
+        for field in self.fields:
+            if field.dtype == 'datetime64[ns]':
+                for record in df_as_dict:
+                    record[field.field_name] = record[field.field_name].strftime('%Y-%m-%d %H:%M:%S') if record[field.field_name] is not None else None
 
         return [
             {
