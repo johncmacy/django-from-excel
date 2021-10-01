@@ -1,1 +1,1 @@
-# Created by django-from-excel at 2021-09-20 06:06:05.754595from django.contrib import adminfrom .models import *admin.site.register(ConvertedModel)
+# Created by django-from-excel at 2021-09-20 08:24:05.503356from django.contrib import adminfrom .models import *admin.site.register(ConvertedModel)

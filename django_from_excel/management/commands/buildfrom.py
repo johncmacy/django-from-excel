@@ -124,35 +124,22 @@ class Model:
         ]
 
 class Converter:
-    def __init__(self, filepath:str, app:str, overwrite=False, migrate=False, loaddata=False, dev_mode=False):
+    def __init__(self, filepath:str, app:str, overwrite=False):
         self.filepath = filepath
         self.app = app
         self.overwrite = overwrite
-        self.migrate = migrate
-        self.loaddata = loaddata
-
-        self.dev_mode = dev_mode
 
         self.files_suffix ='' if overwrite else f'_{hex(abs(hash(datetime.now())))[2:10]}'
 
     def convert(self):
-
         self.generate_models()
         self.create_models_dot_py()
         self.create_admin_dot_py()
+        self.create_fixtures()
 
-        if self.overwrite and self.migrate:
-            if not self.dev_mode:
-                management.call_command('makemigrations')
-                management.call_command('migrate')
-
-            if self.loaddata:
-                self.create_fixtures()
-
-                if not self.dev_mode:
-                    management.call_command('loaddata', *self.fixture_filenames(), app=self.app)
-
-        print(f'Complete. Run server and view the data at http://localhost:8000/admin/')
+        print('Complete.')
+        print('Run [manage.py makemigrations], then [manage.py migrate] to commit these models to your database schema.')
+        print(f'Run [manage.py loaddata {" ".join(self.fixture_filenames())}] to add the data your database.')
 
     def generate_models(self):
         df = pd.read_excel(self.filepath, dtype=object)
@@ -174,6 +161,8 @@ class Converter:
         filepath = os.path.join(self.app, f'models{self.files_suffix}.py')
         with open(filepath, 'w') as f:
             f.write(file_contents)
+
+        print(f'Generated models in {filepath}')
         
     def create_admin_dot_py(self):
         file_contents = f'# Created by django-from-excel at {datetime.now()}\r\r'
@@ -185,6 +174,8 @@ class Converter:
         with open(filepath, 'w') as f:
             f.write(file_contents)
 
+        print(f'Registered models in {filepath}')
+
     def create_fixtures(self):
         for model in self.models:
             dir = os.path.join(self.app, 'fixtures')
@@ -194,6 +185,8 @@ class Converter:
             filepath = os.path.join(dir, f'{model.class_name.lower()}.json')
             with open(filepath, 'w') as f:
                 json.dump(model.fixture(), f)
+
+            print(f'Created fixture in {filepath}')
 
     def fixture_filenames(self):
         return [f'{model.class_name.lower()}.json' for model in self.models]
@@ -207,20 +200,27 @@ class Command(BaseCommand):
         parser.add_argument('filepath', nargs='+', type=str)
         parser.add_argument('app', nargs='+', type=str)
         parser.add_argument('--overwrite', action='store_true', help='Overwrite existing models.py and admin.py files?')
-        parser.add_argument('--migrate', action='store_true', help='Run makemigrations and migrate when done?')
-        parser.add_argument('--loaddata', action='store_true', help='Load data after migrations are complete?')
+        # parser.add_argument('--migrate', action='store_true', help='Run makemigrations and migrate when done?')
+        # parser.add_argument('--loaddata', action='store_true', help='Load data after migrations are complete?')
 
     def handle(self, *args, **options):
 
         filepath = options['filepath'][0]
         app = options['app'][0]
         overwrite = options['overwrite']
-        migrate = options['migrate']
-        loaddata = options['loaddata']
+        # migrate = options['migrate']
+        # loaddata = options['loaddata']
 
         self.stdout.write(f'Converting {filepath} to models in {app}')
 
-        Converter(filepath, app, overwrite, migrate, loaddata).convert()
+        converter = Converter(filepath, app, overwrite)
+        converter.convert()
 
+        # if overwrite and migrate:
+        #     management.call_command('makemigrations', app)
+        #     management.call_command('migrate', app)
+
+        #     if loaddata:
+        #         management.call_command('loaddata', *converter.fixture_filenames(), app=app)
 
 

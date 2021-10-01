@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-from-excel"
-version = "0.1.1"
+version = "0.1.2"
 description = "Automatically build Django models from an Excel file"
 readme = 'README.md'
 authors = ["John Macy <johncmacy@gmail.com>"]
